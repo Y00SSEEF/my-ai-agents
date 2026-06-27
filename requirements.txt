@@ -1,0 +1,8 @@
+groq
+openai
+streamlit
+pandas
+python-dotenv
+requests
+beautifulsoup4
+openpyxl
