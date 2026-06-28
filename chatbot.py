@@ -2,47 +2,57 @@ from dotenv import load_dotenv
 import os
 from groq import Groq
 
-# Load API keys from .env file
+# Load API key
 load_dotenv()
-
-# Get the Groq API key
 groq_api_key = os.getenv("GROQ_API_KEY")
 
-# Check if key exists
 if not groq_api_key:
-    print("❌ ERROR: Groq API key not found in .env file!")
-    print("Please add: GROQ_API_KEY=your_key_here")
+    print("❌ خطأ: لم يتم العثور على مفتاح API")
     exit()
 
 # Initialize Groq client
 client = Groq(api_key=groq_api_key)
 
-print("\n🤖 Welcome to Your AI Assistant!")
-print("Type 'quit' to exit\n")
+print("\n🛍️ مرحباً بك في المتجر الذكي!")
+print("اكتب 'خروج' لإنهاء المحادثة\n")
 
-# Chat loop - keeps the conversation going
+system_prompt = """
+أنت مساعد خدمة عملاء ذكي لمتجر إلكتروني في الإمارات العربية المتحدة.
+
+معلومات مهمة عن المتجر:
+- اسم المتجر: الذكاء للتسوق
+- الهاتف: 800-1234
+- العنوان: دبي
+- ساعات العمل: 9 صباحاً - 10 مساءً
+- سياسة الاسترجاع: 14 يوماً
+- الشحن: مجاني للطلبات فوق 200 درهم
+- الدفع: عند الاستلام
+
+قواعد الرد:
+1. تحدث باللغة العربية
+2. كن مهذباً ومحترفاً
+3. قدم معلومات دقيقة عن المتجر
+4. كن ودوداً ومفيداً
+"""
+
 while True:
-    # Get user input
-    user_input = input("You: ")
-
-    # Check if user wants to quit
-    if user_input.lower() in ['quit', 'exit', 'q']:
-        print("Goodbye! 👋")
+    user_input = input("أنت: ")
+    
+    if user_input.lower() in ['خروج', 'quit', 'exit', 'q']:
+        print("مع السلامة! 👋")
         break
-
-    # Get AI response
+    
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",  # ✅ UPDATED - WORKING MODEL
+            model="llama-3.1-70b-versatile",
+            temperature=0.7,
             messages=[
-                {"role": "system", "content": "You are a helpful AI assistant. Answer in a clear and friendly way."},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_input}
             ]
         )
-
-        # Print the response
-        ai_response = response.choices[0].message.content
-        print(f"\n🤖 AI: {ai_response}\n")
-
+        
+        print(f"\n🤖 المساعد: {response.choices[0].message.content}\n")
+        
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"❌ خطأ: {e}")
